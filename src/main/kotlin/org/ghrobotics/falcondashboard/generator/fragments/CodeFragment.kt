@@ -1,12 +1,16 @@
 package org.ghrobotics.falcondashboard.generator.fragments
 
+import edu.wpi.first.wpilibj.geometry.Pose2d
+import edu.wpi.first.wpilibj.geometry.Translation2d
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil
+import edu.wpi.first.wpilibj.util.Units
 import javafx.scene.layout.Priority
 import javafx.scene.text.Font
 import kfoenix.jfxtextarea
 import org.ghrobotics.falcondashboard.generator.GeneratorView
 import tornadofx.*
 import java.awt.Desktop
+import java.lang.StringBuilder
 import java.net.URI
 
 class CodeFragment : Fragment() {
@@ -27,7 +31,33 @@ class CodeFragment : Fragment() {
 
             vgrow = Priority.ALWAYS
 
-            text = TrajectoryUtil.serializeTrajectory(GeneratorView.trajectory.value)
+//            text = TrajectoryUtil.serializeTrajectory(GeneratorView.trajectory.value)
+
+            val waypoints = GeneratorView.waypoints
+            text = ""
+
+            val builder = StringBuilder(text)
+
+            for (pose in waypoints){
+                val translation = pose.translation;
+                val rotation2d = pose.rotation;
+                if(pose.equals(waypoints[0]))
+                    text +=
+                        "new Pose2d(Units.feetToMeters(" + Units.metersToFeet(translation.x) +
+                                "), Units.feetToMeters(" + Units.metersToFeet(translation.y) + "), new Rotation2d().fromDegrees(" + rotation2d.degrees+")), \n \n"
+                else if(pose.equals(waypoints[waypoints.size-1]))
+                    text +=
+                        "new Pose2d(Units.feetToMeters(" + Units.metersToFeet(translation.x) +
+                                "), Units.feetToMeters(" + Units.metersToFeet(translation.y) + "), new Rotation2d().fromDegrees(" + rotation2d.degrees+")) \n" +
+                                " \n"
+                else{
+                    text += "List.of("
+                    text += "new Translation2d(Units.feetToMeters(" + Units.metersToFeet(translation.x)+"), Units.feetToMeters(" + Units.metersToFeet(translation.y)+")"
+                    text += "), \n" +
+                            " \n"
+                }
+            }
+
         }
         vbox {
             style {

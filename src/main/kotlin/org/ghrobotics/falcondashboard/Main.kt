@@ -16,7 +16,7 @@ class Main : App(MainView::class) {
             find<InvalidTrajectoryFragment>().openModal(StageStyle.UTILITY)
         }
     }
-
+    
     override fun stop() {
         Settings.save()
     }
