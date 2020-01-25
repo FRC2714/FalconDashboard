@@ -41,20 +41,25 @@ class CodeFragment : Fragment() {
             for (pose in waypoints){
                 val translation = pose.translation;
                 val rotation2d = pose.rotation;
-                if(pose.equals(waypoints[0]))
-                    text +=
-                        "new Pose2d(Units.feetToMeters(" + Units.metersToFeet(translation.x) +
-                                "), Units.feetToMeters(" + Units.metersToFeet(translation.y) + "), new Rotation2d().fromDegrees(" + rotation2d.degrees+")), \n \n"
-                else if(pose.equals(waypoints[waypoints.size-1]))
-                    text +=
-                        "new Pose2d(Units.feetToMeters(" + Units.metersToFeet(translation.x) +
-                                "), Units.feetToMeters(" + Units.metersToFeet(translation.y) + "), new Rotation2d().fromDegrees(" + rotation2d.degrees+")) \n" +
-                                " \n"
-                else{
-                    text += "List.of("
-                    text += "new Translation2d(Units.feetToMeters(" + Units.metersToFeet(translation.x)+"), Units.feetToMeters(" + Units.metersToFeet(translation.y)+")"
-                    text += "), \n" +
-                            " \n"
+                if(pose == waypoints[0]) {
+                    text += String.format(
+                        "new Pose2d(Units.feetToMeters(%.2f), Units.feetToMeters(%.2f), new Rotation2d().fromDegrees(%.2f)), \n \n",
+                        Units.metersToFeet(translation.x), Units.metersToFeet(translation.y), rotation2d.degrees
+                    )
+
+                    text+= "List.of( \n"
+
+                }else if(pose == waypoints[waypoints.size-1]) {
+                    text+= "), \n \n"
+
+                    text += String.format(
+                        "new Pose2d(Units.feetToMeters(%.2f), Units.feetToMeters(%.2f), new Rotation2d().fromDegrees(%.2f))",
+                        Units.metersToFeet(translation.x), Units.metersToFeet(translation.y), rotation2d.degrees
+                    )
+
+                }else{
+                    text += String.format("\tnew Translation2d(Units.feetToMeters(%.2f), Units.feetToMeters(%.2f)), \n",
+                        Units.metersToFeet(translation.x), Units.metersToFeet(translation.y))
                 }
             }
 
@@ -63,11 +68,11 @@ class CodeFragment : Fragment() {
             style {
                 padding = box(0.5.em, 0.em, 0.em, 0.em)
             }
-            add(text(" This code is generated to be used with FalconLibrary"))
-            add(hyperlink("https://github.com/5190GreenHopeRobotics/FalconLibrary") {
+            add(text(" This code is generated to be used with WPILib"))
+            add(hyperlink("https://github.com/allwpilib/") {
                 setOnAction {
                     Desktop.getDesktop()
-                        .browse(URI("https://github.com/5190GreenHopeRobotics/FalconLibrary"))
+                        .browse(URI("https://github.com/allwpilib"))
                 }
             })
         }
