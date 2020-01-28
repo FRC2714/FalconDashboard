@@ -9,6 +9,7 @@ import tornadofx.launch
 
 class Main : App(MainView::class) {
     init {
+
         Settings
         Network
 
@@ -16,7 +17,7 @@ class Main : App(MainView::class) {
             find<InvalidTrajectoryFragment>().openModal(StageStyle.UTILITY)
         }
     }
-    
+
     override fun stop() {
         Settings.save()
     }

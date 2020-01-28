@@ -32,10 +32,11 @@ class CodeFragment : Fragment() {
 
             vgrow = Priority.ALWAYS
 
-//            text = TrajectoryUtil.serializeTrajectory(GeneratorView.trajectory.value)
-
             val waypoints = GeneratorView.waypoints
             text = ""
+
+            text += "RamseteGenerator.getRamseteCommand(\n"
+            text += "\tdrivetrain,\n"
 
             if(Settings.clampedCubic.value) {
                 for (pose in waypoints) {
@@ -43,7 +44,7 @@ class CodeFragment : Fragment() {
                     val rotation2d = pose.rotation;
                     if (pose == waypoints[0]) {
                         text += String.format(
-                            "new Pose2d(Units.feetToMeters(%.2f), Units.feetToMeters(%.2f), new Rotation2d().fromDegrees(%.2f)), \n \n",
+                            "\tnew Pose2d(Units.feetToMeters(%.2f), Units.feetToMeters(%.2f), new Rotation2d().fromDegrees(%.2f)), \n \n",
                             Units.metersToFeet(translation.x), Units.metersToFeet(translation.y), rotation2d.degrees
                         )
 
@@ -53,29 +54,40 @@ class CodeFragment : Fragment() {
                         text += "), \n \n"
 
                         text += String.format(
-                            "new Pose2d(Units.feetToMeters(%.2f), Units.feetToMeters(%.2f), new Rotation2d().fromDegrees(%.2f)),",
+                            "\tnew Pose2d(Units.feetToMeters(%.2f), Units.feetToMeters(%.2f), new Rotation2d().fromDegrees(%.2f)),",
                             Units.metersToFeet(translation.x), Units.metersToFeet(translation.y), rotation2d.degrees
                         )
 
                     } else {
                         text += String.format(
-                            "\tnew Translation2d(Units.feetToMeters(%.2f), Units.feetToMeters(%.2f)), \n",
+                            "\t\tnew Translation2d(Units.feetToMeters(%.2f), Units.feetToMeters(%.2f)), \n",
                             Units.metersToFeet(translation.x), Units.metersToFeet(translation.y)
                         )
                     }
                 }
 
             } else {
+                text+="\tList.of{"
                 for(pose in waypoints){
-                    val translation = pose.translation;
-                    val rotation2d = pose.rotation;
+                    val translation = pose.translation
+                    val rotation2d = pose.rotation
 
                     text += String.format(
-                        "new Pose2d(Units.feetToMeters(%.2f), Units.feetToMeters(%.2f), new Rotation2d().fromDegrees(%.2f)), \n",
+                        "\t\tnew Pose2d(Units.feetToMeters(%.2f), Units.feetToMeters(%.2f), new Rotation2d().fromDegrees(%.2f)), \n",
                         Units.metersToFeet(translation.x), Units.metersToFeet(translation.y), rotation2d.degrees
                     )
+
                 }
+
+                text += "\t),\n"
             }
+            text+= "\tUnits.feetToMeters(velocity), Units.feetToMeters(accel), "
+            if(Settings.reversed.value)
+                text += "true"
+            else
+                text+="false"
+            text += "\n"
+            text += ");"
 
         }
         vbox {
