@@ -14,7 +14,7 @@ import java.io.FileWriter
 object Settings {
     val name = SimpleStringProperty("Baseline")
     val reversed = SimpleBooleanProperty(false)
-    val clampedCubic = SimpleBooleanProperty(true)
+    val clampedCubic = SimpleBooleanProperty(false)
     val autoPathFinding = SimpleBooleanProperty(false)
     val startVelocity = SimpleDoubleProperty(0.0)
     val endVelocity = SimpleDoubleProperty(0.0)

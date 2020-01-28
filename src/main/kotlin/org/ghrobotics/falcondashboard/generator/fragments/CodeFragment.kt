@@ -67,15 +67,20 @@ class CodeFragment : Fragment() {
                 }
 
             } else {
-                text+="\tList.of{"
-                for(pose in waypoints){
+                text+="\tList.of(\n"
+                val iterator = waypoints.toList().listIterator()
+                while(iterator.hasNext()){
+                    val pose = iterator.next()
                     val translation = pose.translation
                     val rotation2d = pose.rotation
-
                     text += String.format(
-                        "\t\tnew Pose2d(Units.feetToMeters(%.2f), Units.feetToMeters(%.2f), new Rotation2d().fromDegrees(%.2f)), \n",
+                        "\t\tnew Pose2d(Units.feetToMeters(%.2f), Units.feetToMeters(%.2f), new Rotation2d().fromDegrees(%.2f))",
                         Units.metersToFeet(translation.x), Units.metersToFeet(translation.y), rotation2d.degrees
                     )
+
+                    if(iterator.hasNext())
+                        text += ","
+                    text += "\n"
 
                 }
 
