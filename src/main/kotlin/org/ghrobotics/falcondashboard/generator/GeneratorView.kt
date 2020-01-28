@@ -14,6 +14,7 @@ import kfoenix.jfxbutton
 import kfoenix.jfxcheckbox
 import kfoenix.jfxtabpane
 import kfoenix.jfxtextfield
+import org.ghrobotics.falcondashboard.Settings
 import org.ghrobotics.falcondashboard.Settings.autoPathFinding
 import org.ghrobotics.falcondashboard.Settings.clampedCubic
 import org.ghrobotics.falcondashboard.Settings.endVelocity

@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.util.Units
 import javafx.scene.layout.Priority
 import javafx.scene.text.Font
 import kfoenix.jfxtextarea
+import org.ghrobotics.falcondashboard.Settings
 import org.ghrobotics.falcondashboard.generator.GeneratorView
 import tornadofx.*
 import java.awt.Desktop
@@ -36,30 +37,43 @@ class CodeFragment : Fragment() {
             val waypoints = GeneratorView.waypoints
             text = ""
 
-            val builder = StringBuilder(text)
+            if(Settings.clampedCubic.value) {
+                for (pose in waypoints) {
+                    val translation = pose.translation;
+                    val rotation2d = pose.rotation;
+                    if (pose == waypoints[0]) {
+                        text += String.format(
+                            "new Pose2d(Units.feetToMeters(%.2f), Units.feetToMeters(%.2f), new Rotation2d().fromDegrees(%.2f)), \n \n",
+                            Units.metersToFeet(translation.x), Units.metersToFeet(translation.y), rotation2d.degrees
+                        )
 
-            for (pose in waypoints){
-                val translation = pose.translation;
-                val rotation2d = pose.rotation;
-                if(pose == waypoints[0]) {
+                        text += "List.of( \n"
+
+                    } else if (pose == waypoints[waypoints.size - 1]) {
+                        text += "), \n \n"
+
+                        text += String.format(
+                            "new Pose2d(Units.feetToMeters(%.2f), Units.feetToMeters(%.2f), new Rotation2d().fromDegrees(%.2f)),",
+                            Units.metersToFeet(translation.x), Units.metersToFeet(translation.y), rotation2d.degrees
+                        )
+
+                    } else {
+                        text += String.format(
+                            "\tnew Translation2d(Units.feetToMeters(%.2f), Units.feetToMeters(%.2f)), \n",
+                            Units.metersToFeet(translation.x), Units.metersToFeet(translation.y)
+                        )
+                    }
+                }
+
+            } else {
+                for(pose in waypoints){
+                    val translation = pose.translation;
+                    val rotation2d = pose.rotation;
+
                     text += String.format(
-                        "new Pose2d(Units.feetToMeters(%.2f), Units.feetToMeters(%.2f), new Rotation2d().fromDegrees(%.2f)), \n \n",
+                        "new Pose2d(Units.feetToMeters(%.2f), Units.feetToMeters(%.2f), new Rotation2d().fromDegrees(%.2f)), \n",
                         Units.metersToFeet(translation.x), Units.metersToFeet(translation.y), rotation2d.degrees
                     )
-
-                    text+= "List.of( \n"
-
-                }else if(pose == waypoints[waypoints.size-1]) {
-                    text+= "), \n \n"
-
-                    text += String.format(
-                        "new Pose2d(Units.feetToMeters(%.2f), Units.feetToMeters(%.2f), new Rotation2d().fromDegrees(%.2f))",
-                        Units.metersToFeet(translation.x), Units.metersToFeet(translation.y), rotation2d.degrees
-                    )
-
-                }else{
-                    text += String.format("\tnew Translation2d(Units.feetToMeters(%.2f), Units.feetToMeters(%.2f)), \n",
-                        Units.metersToFeet(translation.x), Units.metersToFeet(translation.y))
                 }
             }
 
