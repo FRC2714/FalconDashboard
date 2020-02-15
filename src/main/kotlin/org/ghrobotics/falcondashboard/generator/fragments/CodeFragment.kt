@@ -23,7 +23,7 @@ class CodeFragment : Fragment() {
             padding = box(1.em)
         }
 
-        prefWidth = 800.0
+        prefWidth = 1300.0
         prefHeight = 500.0
 
         jfxtextarea {
